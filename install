@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+if [ ! -f install ]; then
+	echo 'install must be run within its container folder' 1>&2
+	exit 1
+fi
+ 
+CURDIR=`pwd`
+OLDGOPATH="$GOPATH"
+export GOPATH="$CURDIR"
+ 
+echo "GOPATH: $GOPATH"
+
+# code.google.com/p/goprotobuf/{proto,protoc-gen-go}
+
+if [ ! -d src/code.google.com ]; then
+	echo "downloading goprotobuf ..."
+	go get code.google.com/p/goprotobuf/{proto,protoc-gen-go}
+fi
+
+if [ ! -f bin/protoc-gen-go ]; then
+	echo "compiling [protoc-gen-go] plugin..."
+	go install code.google.com/p/goprotobuf/protoc-gen-go
+fi
+
+if [ ! -d src/command ]; then
+	mkdir src/command
+fi
+
+if [ ! -d src/server ]; then
+	mkdir src/server
+fi
+
+# compile proto files.
+for file in `ls ./src/command/`
+do
+	if [ "${file##*.}" = "proto" ]; then
+		echo "protoc: compiling proto file [$file] ..."
+		protoc --plugin=protoc-gen-go=./bin/protoc-gen-go --go_out=./src/command --proto_path=./src/command ./src/command/$file
+	fi
+done
+
+#gofmt -w src
+go build server
+#go install server
+
+#go clean
+ 
+export GOPATH="$OLDGOPATH"
+ 
+echo 'finished'

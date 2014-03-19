@@ -1,0 +1,56 @@
+// test message
+
+option optimize_for = SPEED;
+
+package Cmd.Test;
+
+enum MSG_INDEX {
+	THE_FIRST = 1;
+};
+
+//
+//
+// example.
+// message msg_name
+// {
+//	enum MSG_SECOND {
+//		THE_SECOND = 1;	
+//	}
+//
+//	optional MSG_INDEX FIRST = 1[default=THE_FIRST];
+//	optional MSG_SECOND SECOND = 2[default=THE_SECOND];
+//---------------------------------------------------------------
+//	....
+//
+// }
+//
+//
+
+message TestMessage
+{
+	enum MSG_SECOND {
+		THE_SECOND = 1;
+	};
+
+	optional MSG_INDEX FIRST = 1[default=THE_FIRST];
+	optional MSG_SECOND SECOND = 2[default=THE_SECOND];
+
+	optional bytes 	name 	= 3;
+	optional int32	age		= 4;
+	optional bytes	desc	= 5;
+	optional int32	count	= 6;
+};
+
+
+message RequestLogin
+{
+	enum MSG_SECOND {
+		THE_SECOND = 2;
+	};
+	
+	optional MSG_INDEX FIRST = 1[default=THE_FIRST];
+	optional MSG_SECOND SECOND = 2[default=THE_SECOND];
+
+	optional bytes username = 3;
+	optional bytes password = 4;
+};
